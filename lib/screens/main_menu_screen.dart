@@ -37,6 +37,9 @@ class _MainMenuScreenState extends State<MainMenuScreen>
 
   @override
   Widget build(BuildContext context) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    final logoSize = (shortestSide * 0.18).clamp(50.0, 90.0);
+    final buttonWidth = (shortestSide * 0.58).clamp(180.0, 260.0);
     return Scaffold(
       body: Stack(
         children: [
@@ -61,9 +64,9 @@ class _MainMenuScreenState extends State<MainMenuScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildAnimatedCircle(),
-                        const SizedBox(width: 15),
-                        _buildAnimatedCross(),
+                        _buildAnimatedCircle(logoSize),
+                        SizedBox(width: logoSize * 0.2),
+                        _buildAnimatedCross(logoSize),
                       ],
                     ),
                   ),
@@ -79,7 +82,7 @@ class _MainMenuScreenState extends State<MainMenuScreen>
 
                   // Play button
                   SizedBox(
-                    width: 220,
+                    width: buttonWidth,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -127,35 +130,45 @@ class _MainMenuScreenState extends State<MainMenuScreen>
     );
   }
 
-  Widget _buildAnimatedCircle() {
+  Widget _buildAnimatedCircle(double size) {
     return Container(
-      width: 70,
-      height: 70,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 12),
+        border: Border.all(color: Colors.white, width: size * 0.17),
       ),
     );
   }
 
-  Widget _buildAnimatedCross() {
+  Widget _buildAnimatedCross(double size) {
+    final thickness = size * 0.17;
+    final topOffset = (size - thickness) / 2;
     return SizedBox(
-      width: 70,
-      height: 70,
+      width: size,
+      height: size,
       child: Stack(
         children: [
           Positioned(
-            top: 30,
+            top: topOffset,
             child: Transform.rotate(
               angle: 45 * 3.14159 / 180,
-              child: Container(width: 70, height: 12, color: Colors.white),
+              child: Container(
+                width: size,
+                height: thickness,
+                color: Colors.white,
+              ),
             ),
           ),
           Positioned(
-            top: 30,
+            top: topOffset,
             child: Transform.rotate(
               angle: -45 * 3.14159 / 180,
-              child: Container(width: 70, height: 12, color: Colors.white),
+              child: Container(
+                width: size,
+                height: thickness,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

@@ -223,6 +223,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final boardSize = (screenSize.shortestSide * 0.8).clamp(240.0, 400.0);
+    final buttonWidth = (screenSize.width * 0.29).clamp(100.0, 140.0);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -327,8 +330,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
 
                 // Game board
                 Container(
-                  width: 300,
-                  height: 300,
+                  width: boardSize,
+                  height: boardSize,
                   decoration: BoxDecoration(
                     color: AppTheme.primaryColor,
                     borderRadius: BorderRadius.circular(10),
@@ -374,18 +377,17 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 120,
+                      width: buttonWidth,
                       child: ElevatedButton(
                         onPressed: resetGame,
                         child: const Text('Restart'),
                       ),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
                     SizedBox(
-                      width: 120,
+                      width: buttonWidth,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Use Navigator.pop instead of pushReplacement
                           Navigator.of(context).pop();
                         },
                         child: const Text('End game'),

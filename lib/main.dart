@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/flame.dart';
@@ -6,16 +7,16 @@ import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Set preferred orientations
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
-  
-  // Initialize Flame
-  await Flame.device.fullScreen();
-  await Flame.device.setPortrait();
-  
+
+  if (!kIsWeb) {
+    // Set preferred orientations (mobile only)
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    // Initialize Flame device settings (mobile only)
+    await Flame.device.fullScreen();
+    await Flame.device.setPortrait();
+  }
+
   runApp(const MyApp());
 }
 

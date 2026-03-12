@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/particles.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/collisions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
@@ -118,7 +119,7 @@ class TicTacToeGame extends FlameGame {
 
     // Apply move with animation
     boardComponent.placeSymbol(row, col, currentPlayer);
-    HapticFeedback.lightImpact();
+    if (!kIsWeb) HapticFeedback.lightImpact();
 
     board[row][col] = currentPlayer;
 
@@ -514,16 +515,16 @@ class BoardComponent extends PositionComponent with TapCallbacks {
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
 
-    // Calculate board size based on screen width
-    final boardSize = size.x * relativeSize;
+    // Use the shorter dimension so the board never overflows on wide web screens
+    final boardSize = (min(
+      size.x * relativeSize,
+      size.y * 0.52,
+    )).clamp(200.0, 420.0);
     cellSize = boardSize / 3;
     this.size = Vector2(boardSize, boardSize);
 
     // Center the board horizontally and position it vertically
-    position = Vector2(
-      (size.x - this.size.x) / 2,
-      size.y * 0.35, // Position at 40% from top
-    );
+    position = Vector2((size.x - this.size.x) / 2, size.y * 0.35);
   }
 
   @override
@@ -1017,13 +1018,25 @@ class ButtonsComponent extends PositionComponent
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    // Position buttons at 90% of screen height
-    position = Vector2(size.x / 2, size.y * 0.9);
 
-    // Adjust button positions to be more centered and visible
-    // Reduce the spacing and move them slightly right
-    restartButton.position = Vector2(-25, 0); // Changed from -100 to -25
-    exitButton.position = Vector2(160, 0); // Changed from 100 to 160
+    // Derive board bounds using the same formula as BoardComponent
+    const boardRelSize = 0.8;
+    final boardSize = (min(
+      size.x * boardRelSize,
+      size.y * 0.52,
+    )).clamp(200.0, 420.0);
+    final boardLeft = (size.x - boardSize) / 2;
+    final boardCenterX = boardLeft + boardSize / 2;
+    final boardBottom = size.y * 0.35 + boardSize;
+
+    // Anchor buttons to the real board centre-X, 55 px below the board
+    position = Vector2(boardCenterX, boardBottom + 55);
+
+    // Symmetrically centre the two buttons with a fixed gap between them
+    const bw = 140.0;
+    const gap = 20.0;
+    restartButton.position = Vector2(-(bw / 2 + gap / 2), 0);
+    exitButton.position = Vector2(bw / 2 + gap / 2, 0);
   }
 }
 
@@ -1051,7 +1064,7 @@ class ButtonComponent extends PositionComponent
     this.textColor = AppTheme.primaryColor,
     this.borderRadius = 25,
     this.shadowOffset = 4,
-  }) : super(anchor: Anchor.center);
+  }) : super();
 
   @override
   Future<void> onLoad() async {

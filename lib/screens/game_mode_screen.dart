@@ -72,8 +72,12 @@ class GameModeScreen extends StatelessWidget {
     required String label,
     required bool isAI,
   }) {
+    final buttonWidth = (MediaQuery.of(context).size.shortestSide * 0.62).clamp(
+      200.0,
+      280.0,
+    );
     return SizedBox(
-      width: 240,
+      width: buttonWidth,
       child: ElevatedButton.icon(
         icon: Icon(icon, size: 24),
         label: Text(label),

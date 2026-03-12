@@ -91,8 +91,11 @@ class _SideSelectionScreenState extends State<SideSelectionScreen>
                   ValueListenableBuilder<String?>(
                     valueListenable: _selectedSideNotifier,
                     builder: (context, selectedSide, _) {
+                      final buttonWidth =
+                          (MediaQuery.of(context).size.shortestSide * 0.58)
+                              .clamp(180.0, 260.0);
                       return SizedBox(
-                        width: 220,
+                        width: buttonWidth,
                         child: ElevatedButton(
                           onPressed: selectedSide != null
                               ? () => _startGame(context, selectedSide)
@@ -129,14 +132,19 @@ class _SideSelectionScreenState extends State<SideSelectionScreen>
       builder: (context, selectedSide, _) {
         final isSelected =
             (isX && selectedSide == 'X') || (!isX && selectedSide == 'O');
+        final base = (MediaQuery.of(context).size.shortestSide * 0.21).clamp(
+          70.0,
+          100.0,
+        );
+        final boxSize = isSelected ? base * 1.2 : base;
 
         return GestureDetector(
           onTap: onSelect,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
-            width: isSelected ? 100 : 80,
-            height: isSelected ? 100 : 80,
+            width: boxSize,
+            height: boxSize,
             decoration: BoxDecoration(
               color: isSelected ? Colors.white : Colors.white.withAlpha(100),
               borderRadius: BorderRadius.circular(isX ? 16 : 50),
@@ -159,18 +167,18 @@ class _SideSelectionScreenState extends State<SideSelectionScreen>
             child: Center(
               child: isX
                   ? _buildCross(
-                      size: isSelected ? 70 : 50,
-                      thickness: isSelected ? 15 : 10,
+                      size: isSelected ? boxSize * 0.7 : boxSize * 0.63,
+                      thickness: isSelected ? boxSize * 0.15 : boxSize * 0.13,
                       color: AppTheme.primaryColor,
                     )
                   : Container(
-                      width: isSelected ? 70 : 50,
-                      height: isSelected ? 70 : 50,
+                      width: isSelected ? boxSize * 0.7 : boxSize * 0.63,
+                      height: isSelected ? boxSize * 0.7 : boxSize * 0.63,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppTheme.primaryColor,
-                          width: isSelected ? 15 : 10,
+                          width: isSelected ? boxSize * 0.15 : boxSize * 0.13,
                         ),
                       ),
                     ),
